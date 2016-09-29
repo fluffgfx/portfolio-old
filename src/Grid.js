@@ -7,7 +7,7 @@ export default class Grid extends Component {
     super(props)
     this.state = {
       cellSize: 150,
-      gutterSize: 20,
+      gutterSize: 0,
       nodeWidth: 0,
       gridWidth: 0,
       leftPadding: 0,
@@ -17,6 +17,7 @@ export default class Grid extends Component {
     }
     this.handleRef = this.handleRef.bind(this)
     this.handleClick = this.handleClick.bind(this)
+    this.checkUpdate = this.checkUpdate.bind(this)
   }
 
   handleRef (ref = this.state.ref) {
@@ -28,27 +29,34 @@ export default class Grid extends Component {
     const rightPadding = nodeWidth - (gridWidth * (this.state.cellSize + this.state.gutterSize))
     const leftPadding = rightPadding + 20
     this.setState({ cellSize, nodeWidth, gridWidth, rightPadding, leftPadding, ref }, () => {
-      console.log(this.state)
       let grid = this.fillGrid(genArray(Children.count(this.props.children)))
       this.setState({ grid })
     })
   }
 
   handleClick () {
-    console.log(this)
     this.handleRef()
   }
 
   componentDidMount () {
-    window.addEventListener('resize', () => this.handleRef())
+    window.addEventListener('resize', () => this.checkUpdate())
   }
 
   componentWillUnmount () {
-    window.removeEventListener('resize', () => this.handleRef())
+    window.removeEventListener('resize', () => this.checkUpdate())
+  }
+
+  checkUpdate () {
+    if (this.state.gridWidth !== Math.round(this.state.ref.clientWidth / (this.state.cellSize + this.state.gutterSize))) this.handleRef()
   }
 
   fillGrid (grid) {
-    const children = Children.toArray(this.props.children)
+    const children = Children.toArray(this.props.children).map((child, index) =>
+      cloneElement(child, {
+        width: Math.min(this.state.gridWidth, child.props.width),
+        height: this.state.gridWidth === 1 ? index === this.props.highlighted ? 4 : 2 : child.props.height
+      })
+    )
     const virtualGrid = genArray(children.length * 4).map(row => genArray(this.state.gridWidth).fill(true))
     return grid.map((g, i) => {
       const child = children[i]
@@ -111,14 +119,25 @@ export default class Grid extends Component {
 
   render () {
     return (
-      <div ref={this.handleRef} onClick={this.handleClick} >
+      <div ref={this.handleRef} onClick={this.handleClick} style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        // backgroundColor: '#000',
+        width: '100vw',
+        height: '100vh'
+      }} >
         {Children.toArray(this.props.children).map((child, index) =>
-          this.state.grid[0]
+          this.state.grid[index]
             ? cloneElement(child, {
-              left: this.state.grid[index][1] * (this.state.cellSize + this.state.gutterSize),
-              top: this.state.grid[index][0] * (this.state.cellSize + this.state.gutterSize),
-              width: (child.props.width * this.state.cellSize) + (child.props.width * (this.state.gutterSize - 1)),
-              height: (child.props.height * this.state.cellSize) + (child.props.height * (this.state.gutterSize - 1))
+              style: {
+                left: this.state.grid[index][1] * (this.state.cellSize + this.state.gutterSize),
+                top: this.state.grid[index][0] * (this.state.cellSize + this.state.gutterSize),
+                width: (Math.min(this.state.gridWidth, child.props.width) * this.state.cellSize),
+                height: this.state.gridWidth === 1 ? index === this.props.highlighted ? (4 * this.state.cellSize) : (2 * this.state.cellSize) : (child.props.height * this.state.cellSize)
+              },
+              width: Math.min(this.state.gridWidth, child.props.width),
+              height: this.state.gridWidth === 1 ? 2 : child.props.height
             })
             : null
           )}

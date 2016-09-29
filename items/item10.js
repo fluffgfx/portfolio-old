@@ -1,6 +1,6 @@
 export default {
-  name: 'About Me',
-  width: 2,
+  name: 'Contact Me',
+  width: 3,
   height: 2,
   color: '#fff',
   invert: true

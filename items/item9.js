@@ -1,6 +1,6 @@
 export default {
-  name: 'BLVD',
+  name: 'Airspace',
   width: 2,
   height: 1,
-  color: '#aabbaa'
+  color: '#accfcc'
 }

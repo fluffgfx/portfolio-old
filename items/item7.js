@@ -1,5 +1,6 @@
 export default {
-  name: 'Item7',
+  name: 'dit',
   width: 1,
-  height: 1
+  height: 1,
+  color: '#b9121b'
 }

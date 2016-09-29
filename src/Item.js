@@ -1,44 +1,49 @@
-export default ({ highlighted, data }) => {
+export default ({ highlighted, data, width, height }) => {
+  let h = highlighted ? 4 : height
+  const baseFontStyles = {
+    color: data.invert ? 'black' : 'white',
+    fontFamily: 'proxima-nova',
+    fontSize: '64px',
+    margin: 0,
+    fontWeight: '800'
+  }
   return (
     <div>
-      { data.width === 1 && data.height === 1 
+      { width === 1 && h === 1 && !highlighted
         ? <div>
             <h1 style={{
-              color: 'white',
-              fontFamily: 'proxima-nova',
-              fontSize: '64px',
-              margin: 0,
+              ...baseFontStyles,
               position: 'absolute',
               bottom: 0,
-              left: '10px',
-            }}>{data.name.slice(0, Math.floor(data.name.length / 2))}</h1>
+              right: '58px',
+            }}>{data.name.slice(0, 3).toLowerCase()}</h1>
             <h1 style={{
-              color: 'white',
-              fontFamily: 'proxima-nova',
-              fontSize: '64px',
-              margin: 0,
+              ...baseFontStyles,
               position: 'absolute',
-              bottom: 0,
-              right: '10px',
+              bottom: '44px',
+              right: '-30px',
               transform: 'rotate(-90deg)'
-            }}>{data.name.slice(0, Math.floor(data.name.length / 2))}</h1>
+            }}>{data.name.slice(3).toLowerCase()}</h1>
           </div>
         : <h1 style={{
-            color: 'white',
-            fontFamily: 'proxima-nova',
-            fontSize: '64px',
-            margin: 0,
-            transform: data.width * 2 <= data.height ? 'rotate(-90deg)' : null,
+            ...baseFontStyles,
+            transform: (width * 2 <= h && !highlighted) ? 'rotate(-90deg)' : 'rotate(0deg)',
             position: 'absolute',
-            bottom: data.width * 2 <= data.height ? '60px' : 0,
-            left: data.width * 2 <= data.height ? '-50px' : data.width >= data.height * 3 ? null : '10px',
-            right: data.width >= data.height * 3 ? '10px' : null
-          }}>{data.name}</h1>
+            bottom: (width * 2 <= h && !highlighted) ? '44px' : 0,
+            left: (width * 2 <= h && !highlighted) ? '-50px' : width >= h * 3 ? null : '10px',
+            right: width >= h * 3 ? '10px' : null,
+            transition: 'transform 0.2s ease-in, bottom 0.2s ease-in, left 0.2s ease-in, right 0.2s ease-in'
+          }}>{data.name.toLowerCase()}</h1>
       }
       <div style={{
         opacity: highlighted ? 1 : 0,
-        transition: 'opacity 0.2s ease-in'
-      }}>Data</div>
+        transition: 'opacity 0.2s ease-in 0.7s',
+        padding: '25px'
+      }}>
+        <p style={{
+          color: data.invert ? 'black' : 'white',
+          fontFamily: 'proxima-nova'
+        }}>{data.description || 'Null'}</p></div>
     </div>
   )
 }
