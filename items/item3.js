@@ -1,5 +1,6 @@
 export default {
-  name: 'Item3',
+  name: 'Crank',
   width: 1,
-  height: 4
+  height: 4,
+  color: '#6666ff'
 }

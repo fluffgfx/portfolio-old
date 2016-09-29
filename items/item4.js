@@ -1,5 +1,6 @@
 export default {
-  name: 'Item4',
+  name: 'Jolteon',
   width: 1,
-  height: 1
+  height: 1,
+  color: '#DB9E36'
 }

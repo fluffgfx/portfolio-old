@@ -7,7 +7,7 @@ import { Router, browserHistory, hashHistory, Route, IndexRoute } from 'react-ro
 import App from './App'
 
 const Highlight = ({ ...props }) => {
-  return <App highlighted={props.params.highlight} {...props} />
+  return <App highlighted={props.params.id} {...props} />
 }
 
 render(

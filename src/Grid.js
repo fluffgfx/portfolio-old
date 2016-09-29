@@ -16,19 +16,27 @@ export default class Grid extends Component {
       ref: null
     }
     this.handleRef = this.handleRef.bind(this)
+    this.handleClick = this.handleClick.bind(this)
   }
 
   handleRef (ref = this.state.ref) {
     // component was remounted, recalculate state
+    if (!ref) return
     let cellSize = this.state.cellSize
     const nodeWidth = ref.clientWidth
     let gridWidth = Math.round(ref.clientWidth / (this.state.cellSize + this.state.gutterSize))
     const rightPadding = nodeWidth - (gridWidth * (this.state.cellSize + this.state.gutterSize))
     const leftPadding = rightPadding + 20
     this.setState({ cellSize, nodeWidth, gridWidth, rightPadding, leftPadding, ref }, () => {
+      console.log(this.state)
       let grid = this.fillGrid(genArray(Children.count(this.props.children)))
       this.setState({ grid })
     })
+  }
+
+  handleClick () {
+    console.log(this)
+    this.handleRef()
   }
 
   componentDidMount () {
@@ -103,15 +111,14 @@ export default class Grid extends Component {
 
   render () {
     return (
-      <div ref={this.handleRef}>
-        {Children.map(this.props.children, (child, index) =>
+      <div ref={this.handleRef} onClick={this.handleClick} >
+        {Children.toArray(this.props.children).map((child, index) =>
           this.state.grid[0]
             ? cloneElement(child, {
               left: this.state.grid[index][1] * (this.state.cellSize + this.state.gutterSize),
               top: this.state.grid[index][0] * (this.state.cellSize + this.state.gutterSize),
               width: (child.props.width * this.state.cellSize) + (child.props.width * (this.state.gutterSize - 1)),
-              height: (child.props.height * this.state.cellSize) + (child.props.height * (this.state.gutterSize - 1)),
-              key: `gridItem${index}`
+              height: (child.props.height * this.state.cellSize) + (child.props.height * (this.state.gutterSize - 1))
             })
             : null
           )}

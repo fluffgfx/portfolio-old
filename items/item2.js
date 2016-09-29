@@ -1,5 +1,6 @@
 export default {
-  name: 'Item2',
+  name: 'Audition Work',
   width: 2,
-  height: 3
+  height: 3,
+  color: '#00322B'
 }

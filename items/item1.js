@@ -1,5 +1,6 @@
 export default {
-  name: 'Item1',
+  name: 'College Sites',
   width: 3,
-  height: 1
+  height: 1,
+  color: '#800000'
 }
